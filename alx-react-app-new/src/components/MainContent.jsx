@@ -11,8 +11,7 @@ function MainContent() {
         Welcome to My React App
       </h2>
       <p style={{ fontSize: "16px", lineHeight: "1.6", textAlign: "justify" }}>
-        Here you can explore different cities and learn more about them. This
-        section is styled with inline CSS for better readability and layout.
+        I love to visit New York, Paris, and Tokyo.
       </p>
     </main>
   );
