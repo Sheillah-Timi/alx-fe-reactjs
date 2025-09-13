@@ -1,23 +1,31 @@
-// src/components/RecipeList.jsx
-import React from 'react';
-import { useRecipeStore } from '../store/recipeStore';
+import React from "react";
+import useRecipeStore from "./recipeStore";
 
 const RecipeList = () => {
+  const recipes = useRecipeStore((state) => state.recipes);
   const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
+  const searchTerm = useRecipeStore((state) => state.searchTerm);
+  const filterRecipes = useRecipeStore((state) => state.filterRecipes);
 
-  if (filteredRecipes.length === 0) {
-    return <p>No recipes found. Try another search.</p>;
-  }
+  React.useEffect(() => {
+    filterRecipes();
+  }, [searchTerm, filterRecipes]);
+
+  const displayRecipes =
+    searchTerm.trim() !== "" ? filteredRecipes : recipes;
 
   return (
     <div>
-      {filteredRecipes.map((recipe, index) => (
-        <div key={index} style={{ border: '1px solid #ddd', padding: '12px', marginBottom: '10px', borderRadius: '6px' }}>
-          <h3>{recipe.title}</h3>
-          <p><strong>Ingredients:</strong> {recipe.ingredients?.join(', ')}</p>
-          <p><strong>Preparation Time:</strong> {recipe.prepTime} mins</p>
-        </div>
-      ))}
+      <h2>Recipe List</h2>
+      {displayRecipes.length === 0 ? (
+        <p>No recipes found.</p>
+      ) : (
+        <ul>
+          {displayRecipes.map((recipe, index) => (
+            <li key={index}>{recipe.title}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
