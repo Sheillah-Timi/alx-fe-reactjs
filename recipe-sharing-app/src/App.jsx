@@ -5,15 +5,13 @@ import AddRecipeForm from "./components/AddRecipeForm";
 import RecipeList from "./components/RecipeList";
 import RecipeDetails from "./components/RecipeDetails";
 
-function HomePage() {
-  return (
-    <div style={{ padding: "20px" }}>
-      <h1>Recipe Sharing App</h1>
-      <AddRecipeForm />
-      <RecipeList />
-    </div>
-  );
-}
+const HomePage = () => (
+  <div>
+    <h1>Recipe Sharing App</h1>
+    <AddRecipeForm />
+    <RecipeList />
+  </div>
+);
 
 function App() {
   return (

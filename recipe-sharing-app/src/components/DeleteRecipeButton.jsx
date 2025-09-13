@@ -8,16 +8,13 @@ const DeleteRecipeButton = ({ id }) => {
   const navigate = useNavigate();
 
   const handleDelete = () => {
-    if (confirm("Delete this recipe?")) {
-      deleteRecipe(id);
-      // after delete, send user back to home
-      navigate("/");
-    }
+    deleteRecipe(id);
+    navigate("/"); // ✅ send back to home
   };
 
   return (
-    <button onClick={handleDelete} style={{ marginLeft: "8px" }}>
-      Delete
+    <button type="button" onClick={handleDelete}>
+      Delete Recipe
     </button>
   );
 };

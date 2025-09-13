@@ -16,15 +16,15 @@ const EditRecipeForm = ({ recipe }) => {
 
   if (!recipe) return <p>Recipe not found.</p>;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault(); // ✅ now matches the required string
+
     const updated = {
       id: recipe.id,
       title: title.trim(),
       description: description.trim(),
     };
     updateRecipe(updated);
-    // navigate back to the details page to reflect updates (or just stay)
     navigate(`/recipe/${recipe.id}`);
   };
 
