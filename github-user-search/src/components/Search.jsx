@@ -20,30 +20,35 @@ const Search = () => {
       const data = await fetchUserData(username);
       setUserData(data);
     } catch (err) {
-      setError("Looks like we can't find the user");
+      // exact string required by the tests:
+      setError("Looks like we cant find the user");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      {/* Search Input */}
-      <form onSubmit={handleSubmit}>
+    <div style={{ maxWidth: 600, margin: "1rem auto", textAlign: "center" }}>
+      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
         <input
           type="text"
           placeholder="Enter GitHub username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          aria-label="username-input"
+          style={{ padding: "0.5rem", width: "60%", marginRight: "0.5rem" }}
         />
-        <button type="submit">Search</button>
+        <button type="submit" style={{ padding: "0.5rem 1rem" }}>
+          Search
+        </button>
       </form>
 
-      {/* Conditional Rendering */}
       {loading && <p>Loading...</p>}
+
       {error && <p style={{ color: "red" }}>{error}</p>}
+
       {userData && (
-        <div>
+        <div style={{ marginTop: "1rem" }}>
           <img
             src={userData.avatar_url}
             alt={userData.login}
@@ -51,6 +56,7 @@ const Search = () => {
             style={{ borderRadius: "50%" }}
           />
           <h3>{userData.name || userData.login}</h3>
+          <p>{userData.bio}</p>
           <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
             View Profile
           </a>
