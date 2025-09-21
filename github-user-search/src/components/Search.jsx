@@ -1,26 +1,26 @@
 // src/components/Search.jsx
 import { useState } from "react";
-import { fetchUserData } from "../services/githubService";
+import { fetchUserData, searchUsers } from "../services/githubService";
 
 const Search = () => {
   const [username, setUsername] = useState("");
-  const [userData, setUserData] = useState(null);
+  const [location, setLocation] = useState("");
+  const [minRepos, setMinRepos] = useState("");
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
+  const handleAdvancedSearch = async (e) => {
     e.preventDefault();
-    if (!username) return;
-
     setLoading(true);
     setError(null);
-    setUserData(null);
+    setResults([]);
 
     try {
-      const data = await fetchUserData(username);
-      setUserData(data);
+      const users = await searchUsers({ username, location, minRepos });
+      setResults(users);
+      if (users.length === 0) setError("Looks like we cant find the user");
     } catch (err) {
-      // exact string required by the tests:
       setError("Looks like we cant find the user");
     } finally {
       setLoading(false);
@@ -28,40 +28,70 @@ const Search = () => {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "1rem auto", textAlign: "center" }}>
-      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
+    <div className="max-w-3xl mx-auto p-6">
+      <h1 className="text-2xl font-bold text-center mb-4">GitHub User Search</h1>
+
+      <form
+        onSubmit={handleAdvancedSearch}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6"
+      >
         <input
           type="text"
-          placeholder="Enter GitHub username"
+          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          aria-label="username-input"
-          style={{ padding: "0.5rem", width: "60%", marginRight: "0.5rem" }}
+          className="border rounded-lg p-2 w-full"
         />
-        <button type="submit" style={{ padding: "0.5rem 1rem" }}>
+        <input
+          type="text"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="border rounded-lg p-2 w-full"
+        />
+        <input
+          type="number"
+          placeholder="Min Repos"
+          value={minRepos}
+          onChange={(e) => setMinRepos(e.target.value)}
+          className="border rounded-lg p-2 w-full"
+        />
+        <button
+          type="submit"
+          className="col-span-1 sm:col-span-3 bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 transition"
+        >
           Search
         </button>
       </form>
 
-      {loading && <p>Loading...</p>}
+      {loading && <p className="text-center">Loading...</p>}
+      {error && <p className="text-center text-red-500">{error}</p>}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {userData && (
-        <div style={{ marginTop: "1rem" }}>
-          <img
-            src={userData.avatar_url}
-            alt={userData.login}
-            width={100}
-            style={{ borderRadius: "50%" }}
-          />
-          <h3>{userData.name || userData.login}</h3>
-          <p>{userData.bio}</p>
-          <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
-            View Profile
-          </a>
-        </div>
-      )}
+      <div className="grid gap-4">
+        {results.map((user) => (
+          <div
+            key={user.id}
+            className="flex items-center bg-gray-100 p-4 rounded-lg shadow"
+          >
+            <img
+              src={user.avatar_url}
+              alt={user.login}
+              className="w-16 h-16 rounded-full mr-4"
+            />
+            <div>
+              <h3 className="font-semibold">{user.login}</h3>
+              <a
+                href={user.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                View Profile
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
