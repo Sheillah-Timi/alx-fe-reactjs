@@ -1,11 +1,9 @@
-// src/App.jsx
-import Search from "./components/Search";
-
 function App() {
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>GitHub User Search</h1>
-      <Search />
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <h1 className="text-4xl font-bold text-blue-600">
+        🚀 Tailwind is working!
+      </h1>
     </div>
   );
 }
