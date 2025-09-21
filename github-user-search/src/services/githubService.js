@@ -1,30 +1,18 @@
-// src/services/githubService.js
 import axios from "axios";
 
-const BASE_URL = "https://api.github.com";
+const BASE_URL = "https://api.github.com/search/users";
 
-export const fetchUserData = async (username) => {
-  if (!username) throw new Error("No username provided");
+export const fetchUserData = async (username, location, minRepos) => {
   try {
-    const response = await axios.get(`${BASE_URL}/users/${username}`);
-    return response.data;
-  } catch (err) {
-    throw err;
-  }
-};
+    // Build query string for advanced search
+    let query = username ? `${username} in:login` : "";
 
-// Advanced search with multiple filters
-export const searchUsers = async ({ username, location, minRepos }) => {
-  try {
-    let query = "";
+    if (location) query += ` location:${location}`;
+    if (minRepos) query += ` repos:>=${minRepos}`;
 
-    if (username) query += `${username} in:login `;
-    if (location) query += `location:${location} `;
-    if (minRepos) query += `repos:>=${minRepos}`;
-
-    const response = await axios.get(`${BASE_URL}/search/users?q=${encodeURIComponent(query.trim())}`);
-    return response.data.items; // array of matching users
-  } catch (err) {
-    throw err;
+    const response = await axios.get(`${BASE_URL}?q=${query}`);
+    return response.data.items; // GitHub search returns { items: [...] }
+  } catch (error) {
+    throw error;
   }
 };
